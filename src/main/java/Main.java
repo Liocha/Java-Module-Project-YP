@@ -60,23 +60,19 @@ public class Main {
         } while (!answer.equalsIgnoreCase("завершить"));
         System.out.println("Добавленные товары:" + calculator.getProducts());
         result = calculator.getTotal() / peopleCount;
-        System.out.println("Каждый человк должен заплатить: " + Formatter.getFormatPrice(result) + Formatter.getEnding(result));
+        System.out.println("Каждый человек должен заплатить: " + Formatter.getFormatPrice(result) + " " + Formatter.getEnding(result));
         scanner.close();
     }
 }
 
 class Calculator {
-    double total = 0;
-    String products = "";
+    private double total = 0;
+    private String products = "";
 
     public void add(Product product) {
-        calculateTotal(product.price);
+        this.total = this.total + product.price;
         this.products = this.products + "\n" + product.name;
         System.out.println("Товар успешно добавлен!");
-    }
-
-    void calculateTotal(double productPrice) {
-        this.total = this.total + productPrice;
     }
 
     String getProducts() {
@@ -89,8 +85,8 @@ class Calculator {
 }
 
 class Product {
-    String name;
-    double price;
+    final String name;
+    final double price;
 
     Product(String name, double price) {
         this.name = name;
@@ -104,13 +100,18 @@ class Formatter {
     }
 
     public static String getEnding(double price) {
-        double result = Math.floor(price) % 10;
-        if (result == 1) {
-            return " рубль";
-        } else if (result > 2 && result < 5) {
-            return " рубля";
+        double priceRoundedDown = Math.floor(price);
+        double remainderPerHundred = priceRoundedDown % 100;
+        if (remainderPerHundred >= 11 && remainderPerHundred <= 19) {
+            return "рублей";
+        }
+        double remainderByTen = priceRoundedDown % 10;
+        if (remainderByTen == 1) {
+            return "рубль";
+        } else if (remainderByTen >= 2 && remainderByTen <= 4) {
+            return "рубля";
         } else {
-            return " рублей";
+            return "рублей";
         }
     }
 }
